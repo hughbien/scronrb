@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 require 'date'
+require 'open3'
 
 class Scron
   SCHEDULE_FILE = "#{ENV['HOME']}/.scron"
-  attr_reader :schedules
+  HISTORY_FILE = "#{ENV['HOME']}/.scrondb"
+  LOG_FILE = "#{ENV['HOME']}/.scronlog"
+  attr_reader :history, :schedules
   
   def initialize(text, history_text)
     @history = History.new(history_text)
@@ -12,8 +15,26 @@ class Scron
       map {|l| Schedule.new(l, @history)}
   end
 
+  def self.run!
+    scron = Scron.new(read(SCHEDULE_FILE), read(HISTORY_FILE))
+    overdue = scron.schedules.select {|s| s.overdue?}
+    return unless overdue.size > 0
+
+    logger = []
+    overdue.each do |schedule|
+      stdin, stdout, stderr = Open3.popen3(schedule.command)
+      stdout, stderr = stdout.gets, stderr.gets
+      logger << "=> #{DateTime.now.strftime(History::FORMAT)} #{schedule.command}"
+      logger << stdout if stdout
+      logger << stderr if stderr
+      scron.history.touch(schedule.command) unless stderr
+    end
+    File.open(HISTORY_FILE, "w") {|f| f.puts scron.history.to_s}
+    File.open(LOG_FILE, "a") {|f| f.puts logger.map {|l| l.strip}.join("\n")}
+  end
+
   private
-  def read(filename)
+  def self.read(filename)
     File.exist?(filename) ? File.read(filename) : ''
   end
 end
@@ -67,3 +88,5 @@ class History
     lines.join("\n")
   end
 end
+
+Scron.run! if $0 == __FILE__

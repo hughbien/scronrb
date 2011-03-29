@@ -5,9 +5,17 @@ describe Scron do
     Scron::SCHEDULE_FILE.should == "#{ENV['HOME']}/.scron"
   end
 
+  it "should set HISTORY_FILE" do
+    Scron::HISTORY_FILE.should == "#{ENV['HOME']}/.scrondb"
+  end
+
+  it "should set LOG_FILE" do
+    Scron::LOG_FILE.should == "#{ENV['HOME']}/.scronlog"
+  end
+
   it "should use empty text if no file exists" do
-    Scron.new('', '').send(:read, './non-existent-file').should == ''
-    Scron.new('', '').send(:read, 'README').should_not == ''
+    Scron.send(:read, './non-existent-file').should == ''
+    Scron.send(:read, 'README').should_not == ''
   end
 
   it "should initialize with empty schedules" do

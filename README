@@ -13,7 +13,7 @@ INSTALLATION
 Then configure cron to run it (every 2 hours):
 
   % crontab -e
-  0 */2 * * * scron --run
+  0 */2 * * * scron
 
 USAGE
 =====
