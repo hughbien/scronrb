@@ -25,12 +25,18 @@ once every 30 days:
 You can also specify lower bounds like day of week (Su, Mo, Tu, We, Th, Fr, Sa),
 day of month (23rd), or day of year (4/15):
 
-  Mo   cmd1
-  23rd cmd2
-  4/15 cmd3
+  Mo,Fr    cmd1
+  1st,23rd cmd2
+  4/15     cmd3
 
-`cmd1` will attempt to run on Monday.  If your machine is off the entire day, it
-will run it on the following day.
+`cmd1` will attempt to run on Monday and Friday.  If your machine is off the
+entire day, it will run as soon as possible.  Here's an example timeline:
+
+  Mo: machine is off, nothing happens
+  Tu: machine is on, cmd1 runs to make up for Monday
+  We: already ran, nothing happens
+  Th: already ran, nothing happens
+  Fr: machine is on, cmd1 runs
 
 NOTES
 =====
