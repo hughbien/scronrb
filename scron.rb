@@ -15,10 +15,16 @@ class Scron
       map {|l| Schedule.new(l, @history)}
   end
 
-  def self.run!
+  def self.help
+    puts "Usage: #{File.basename(__FILE__)}"
+  end
+
+  def self.run(argv)
+    return help if argv.size != 0
+
     scron = Scron.new(read(SCHEDULE_FILE), read(HISTORY_FILE))
     overdue = scron.schedules.select {|s| s.overdue?}
-    return unless overdue.size > 0
+    return if overdue.size == 0
 
     logger = []
     overdue.each do |schedule|
@@ -86,4 +92,4 @@ class History
   end
 end
 
-Scron.run! if $0 == __FILE__
+Scron.run(ARGV) if $0 == __FILE__
