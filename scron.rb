@@ -6,6 +6,7 @@ class Scron
   SCHEDULE_FILE = "#{ENV['HOME']}/.scron"
   HISTORY_FILE = "#{ENV['HOME']}/.scrondb"
   LOG_FILE = "#{ENV['HOME']}/.scronlog"
+  NOW = DateTime.now
   attr_reader :history, :schedules
   
   def initialize(text, history_text)
@@ -24,7 +25,7 @@ class Scron
     overdue.each do |schedule|
       stdin, stdout, stderr = Open3.popen3(schedule.command)
       stdout, stderr = stdout.gets, stderr.gets
-      logger << "=> #{DateTime.now.strftime(History::FORMAT)} #{schedule.command}"
+      logger << "=> #{NOW.strftime(History::FORMAT)} #{schedule.command}"
       logger << stdout if stdout
       logger << stderr if stderr
       scron.history.touch(schedule.command) unless stderr
@@ -47,7 +48,7 @@ class Schedule
     @interval = parse_hours(interval)
     @command = command.strip
     @overdue = history[command].nil? || 
-               (DateTime.now - history[command]).to_f * 24 > @interval
+               (Scron::NOW - history[command]).to_f * 24 > @interval
   end
 
   def overdue?
@@ -77,7 +78,7 @@ class History
   end
 
   def touch(command)
-    @history[command] = DateTime.now
+    @history[command] = Scron::NOW
   end
 
   def to_s
