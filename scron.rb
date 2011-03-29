@@ -42,10 +42,10 @@ class Schedule
 
   def initialize(line, history)
     interval, command = line.split(/\s+/, 2)
-    @interval = parse_hours(interval)
+    @interval = parse_days(interval)
     @command = command.strip
     @overdue = history[command].nil? || 
-               (Scron::NOW - history[command]).to_f * 24 > @interval
+               (Scron::NOW - history[command]).to_f > @interval
   end
 
   def overdue?
@@ -53,9 +53,8 @@ class Schedule
   end
 
   private
-  def parse_hours(interval)
-    multiplier = interval =~ /d$/ ? 24 : 1;
-    interval.to_i * multiplier
+  def parse_days(interval)
+    interval.to_i
   end
 end
 

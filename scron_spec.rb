@@ -27,7 +27,7 @@ describe Scron do
     scron = Scron.new(
       "30d cmd arg1 arg2\n" +
       "7d /path/to/script.rb\n" +
-      "24h /path/to/script2.rb",
+      "1d /path/to/script2.rb",
       "2100-01-01.01:00 cmd arg1 arg2\n" +
       "2000-01-01.01:00 /path/to/script.rb")
     scron.schedules.size.should == 3
@@ -38,18 +38,16 @@ describe Scron do
 end
 
 describe Schedule do
-  it "should parse hour intervals from time string" do
+  it "should parse interval from time string" do
     history = History.new('')
-    Schedule.new('1 c', history).send(:parse_hours, '1').should == 1
-    Schedule.new('1 c', history).send(:parse_hours, '24h').should == 24
-    Schedule.new('1 c', history).send(:parse_hours, '1d').should == 24
-    Schedule.new('1 c', history).send(:parse_hours, '30d').should == 720
+    Schedule.new('1 c', history).send(:parse_days, '1d').should == 1
+    Schedule.new('1 c', history).send(:parse_days, '30d').should == 30
   end
 
   it "should initialize with command and interval" do
     sched = Schedule.new('30d cmd arg1 arg2', History.new(''))
     sched.command.should == 'cmd arg1 arg2'
-    sched.interval.should == 720
+    sched.interval.should == 30
     sched.should be_overdue
   end
 
