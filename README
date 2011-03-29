@@ -1,0 +1,49 @@
+DESCRIPTION
+===========
+
+Scron is a script built on top of cron for running commands at scheduled
+intervals.  This works well with laptops which may be shut off at exact times
+when a cron task is scheduled.
+
+INSTALLATION
+============
+
+  % mv scron.rb /directory/in/path/scron
+
+Then configure cron to run it (every 2 hours):
+
+  % crontab -e
+  0 */2 * * * scron --run
+
+USAGE
+=====
+
+Set tasks in $HOME/.scron:
+
+  30d cmd arg1 arg2
+  7d /path/to/script.rb
+  24h /path/to/script2.rb
+
+CONFIGURE
+=========
+
+Some environment variables you can set in your bashrc or zshrc:
+
+  SCRONLOG=~/.scronlog
+  SCRONDB=~/.scrondb
+
+SCRONLOG is where stdout/errors from your commands are recorded.  By default,
+any output is not recorded.
+
+SCRONDB is where scron holds the timestamps of the last run commands so it
+knows when enough time has elapsed to re-run a command.
+
+An exit status of 0 is considered a success.  Anything else is considered a
+failure and scron will attempt to re-run it again in 2 hours (or whatever you
+configure the scron.
+
+LICENSE
+=======
+
+Copyright 2011 Hugh Bien - http://hughbien.com.
+Released under MIT License, see LICENSE for more info.
