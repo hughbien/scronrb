@@ -1,16 +1,15 @@
 DESCRIPTION
 ===========
 
-Scron is a script built on top of cron for running commands at scheduled
-intervals.  This works well with laptops which may be shut off at exact times
-when a cron task is scheduled.
+Scron is a scheduler for laptops/machines which aren't on 24/7.
 
 INSTALLATION
 ============
 
   % mv scron.rb /directory/in/path/scron
 
-Then configure cron to run it (every 2 hours):
+Then configure cron to run it.  I recommend every 2 hours, but you can put any
+interval here:
 
   % crontab -e
   0 */2 * * * scron
@@ -18,29 +17,31 @@ Then configure cron to run it (every 2 hours):
 USAGE
 =====
 
-Set tasks in $HOME/.scron:
+Configure jobs in $HOME/.scron. This example means run `cmd arg1 arg2` at least
+once every 30 days:
 
   30d cmd arg1 arg2
-  7d /path/to/script.rb
-  24h /path/to/script2.rb
 
-CONFIGURE
-=========
+You can also specify lower bounds like day of week (Su, Mo, Tu, We, Th, Fr, Sa),
+day of month (23rd), or day of year (4/15):
 
-Some environment variables you can set in your bashrc or zshrc:
+  Mo   cmd1
+  23rd cmd2
+  4/15 cmd3
 
-  SCRONLOG=~/.scronlog
-  SCRONDB=~/.scrondb
+`cmd1` will attempt to run on Monday.  If your machine is off the entire day, it
+will run it on the following day.
 
-SCRONLOG is where stdout/errors from your commands are recorded.  By default,
-any output is not recorded.
-
-SCRONDB is where scron holds the timestamps of the last run commands so it
-knows when enough time has elapsed to re-run a command.
+NOTES
+=====
 
 An exit status of 0 is considered a success.  Anything else is considered a
-failure and scron will attempt to re-run it again in 2 hours (or whatever you
-configure the scron.
+failure and scron will attempt to re-run it again in 2 hours.
+
+$HOME/.scrondb keeps the timestamps of the last run commands.
+
+$HOME/.scronlog has the stdout, timestamps, and exit status of last 
+scheduled commands.
 
 LICENSE
 =======
