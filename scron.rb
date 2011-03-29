@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'date'
-require 'open3'
 
 class Scron
   SCHEDULE_FILE = "#{ENV['HOME']}/.scron"
@@ -23,12 +22,10 @@ class Scron
 
     logger = []
     overdue.each do |schedule|
-      stdin, stdout, stderr = Open3.popen3(schedule.command)
-      stdout, stderr = stdout.gets, stderr.gets
-      logger << "=> #{NOW.strftime(History::FORMAT)} #{schedule.command}"
-      logger << stdout if stdout
-      logger << stderr if stderr
-      scron.history.touch(schedule.command) unless stderr
+      output = `#{schedule.command}`
+      logger << "=> #{NOW.strftime(History::FORMAT)} #{schedule.command} (#{$?.to_i})"
+      logger << output unless output == ''
+      scron.history.touch(schedule.command) if $?.to_i == 0
     end
     File.open(HISTORY_FILE, "w") {|f| f.puts scron.history.to_s}
     File.open(LOG_FILE, "a") {|f| f.puts logger.map {|l| l.strip}.join("\n")}
