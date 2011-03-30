@@ -53,7 +53,7 @@ class Schedule
 
   def initialize(line, history)
     interval, command = line.split(/\s+/, 2)
-    @interval = parse_days(interval)
+    @interval = interval.split(',').map {|i| parse_days(i)}.min
     @command = command.strip
     @overdue = history[command].nil? || 
                (Scron.now - history[command]).to_f > @interval
@@ -79,8 +79,10 @@ class Schedule
       year -= 1 if Scron.now.month < month ||
                    (Scron.now.month == month && Scron.now.day < day)
       (Scron.now - DateTime.new(year, month, day)).to_i + 1
-    else
+    elsif interval =~ /^\d+d$/
       interval.to_i
+    else
+      raise "Unable to parse: #{interval}"
     end
   end
 end

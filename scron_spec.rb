@@ -80,6 +80,12 @@ describe Schedule do
     sched.should be_overdue
   end
 
+  it "should initialize with multiple intervals" do
+    Schedule.new('1d,2d,3d cmd', History.new('')).interval.should == 1
+    Schedule.new('Mo,Tu,We cmd', History.new('')).interval.should == 2
+    Schedule.new('1st,23rd cmd', History.new('')).interval.should == 15
+  end
+
   it "should initialize with overdue history" do
     sched = Schedule.new('30d cmd', History.new('2000-01-01.01:00 cmd'))
     sched.should be_overdue
