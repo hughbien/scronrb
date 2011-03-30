@@ -12,13 +12,13 @@ Then configure cron to run it.  I recommend every 2 hours, but you can put any
 interval here:
 
   % crontab -e
-  0 */2 * * * scron
+  0 */2 * * * scron -r
 
 USAGE
 =====
 
-Configure jobs in $HOME/.scron. This example means run `cmd arg1 arg2` at least
-once every 30 days:
+Configure jobs in $HOME/.scron (`scron -e` to edit). This example means run
+`cmd arg1 arg2` at least once every 30 days:
 
   30d cmd arg1 arg2
 

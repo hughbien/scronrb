@@ -5,6 +5,7 @@ class Scron
   SCHEDULE_FILE = "#{ENV['HOME']}/.scron"
   HISTORY_FILE = "#{ENV['HOME']}/.scrondb"
   LOG_FILE = "#{ENV['HOME']}/.scronlog"
+  EDITOR = ENV['EDITOR'] || 'vi'
   attr_reader :history, :schedules
   
   def initialize(text, history_text)
@@ -14,12 +15,9 @@ class Scron
       map {|l| Schedule.new(l, @history)}
   end
 
-  def self.help
-    puts "Usage: #{File.basename(__FILE__)}"
-  end
-
-  def self.run(argv)
-    return help if argv.size != 0
+  def self.run(option)
+    return edit if option == '-e'
+    return help if option != '-r'
 
     scron = Scron.new(read(SCHEDULE_FILE), read(HISTORY_FILE))
     overdue = scron.schedules.select {|s| s.overdue?}
@@ -43,6 +41,16 @@ class Scron
   private
   def self.read(filename)
     File.exist?(filename) ? File.read(filename) : ''
+  end
+
+  def self.help
+    puts "Usage: #{File.basename(__FILE__)} [OPTION]\n" +
+         "       -e edit jobs\n" +
+         "       -r run jobs"
+  end
+
+  def self.edit
+    `#{EDITOR} #{SCHEDULE_FILE} < \`tty\` > \`tty\``
   end
 end
 
@@ -115,4 +123,4 @@ class History
   end
 end
 
-Scron.run(ARGV) if $0 == __FILE__
+Scron.run(ARGV[0]) if $0 == __FILE__

@@ -17,6 +17,10 @@ describe Scron do
     Scron::LOG_FILE.should == "#{ENV['HOME']}/.scronlog"
   end
 
+  it "should set EDITOR" do
+    [ENV['EDITOR'] || 'vi'].should include(Scron::EDITOR)
+  end
+
   it "should use empty text if no file exists" do
     Scron.send(:read, './non-existent-file').should == ''
     Scron.send(:read, 'README').should_not == ''
