@@ -5,7 +5,6 @@ class Scron
   SCHEDULE_FILE = "#{ENV['HOME']}/.scron"
   HISTORY_FILE = "#{ENV['HOME']}/.scrondb"
   LOG_FILE = "#{ENV['HOME']}/.scronlog"
-  NOW = DateTime.now
   attr_reader :history, :schedules
   
   def initialize(text, history_text)
@@ -29,12 +28,16 @@ class Scron
     logger = []
     overdue.each do |schedule|
       output = `#{schedule.command}`
-      logger << "=> #{NOW.strftime(History::FORMAT)} #{schedule.command} (#{$?.to_i})"
+      logger << "=> #{now.strftime(History::FORMAT)} #{schedule.command} (#{$?.to_i})"
       logger << output unless output == ''
       scron.history.touch(schedule.command) if $?.to_i == 0
     end
     File.open(HISTORY_FILE, "w") {|f| f.puts scron.history.to_s}
     File.open(LOG_FILE, "a") {|f| f.puts logger.map {|l| l.strip}.join("\n")}
+  end
+
+  def self.now
+    @now ||= DateTime.now
   end
 
   private
@@ -45,13 +48,15 @@ end
 
 class Schedule
   attr_reader :interval, :command
+  WEEKDAYS = {'Mo' => 1, 'Tu' => 2, 'We' => 3, 'Th' => 4, 'Fr' => 5,
+              'Sa' => 6, 'Su' => 7}
 
   def initialize(line, history)
     interval, command = line.split(/\s+/, 2)
     @interval = parse_days(interval)
     @command = command.strip
     @overdue = history[command].nil? || 
-               (Scron::NOW - history[command]).to_f > @interval
+               (Scron.now - history[command]).to_f > @interval
   end
 
   def overdue?
@@ -60,7 +65,23 @@ class Schedule
 
   private
   def parse_days(interval)
-    interval.to_i
+    now = Scron.now
+    if WEEKDAYS[interval]
+      (now.cwday - WEEKDAYS[interval]) % 7 + 1
+    elsif interval =~ /^\d+(st|nd|rd|th)$/
+      day, last_month = interval.to_i, now << 1
+      delta = now.day >= day ?
+        now.day - day :
+        now - DateTime.new(last_month.year, last_month.month, day)
+      delta.to_i + 1
+    elsif interval =~ /^(\d+)\/(\d+)$/
+      year, month, day = Scron.now.year, $1.to_i, $2.to_i
+      year -= 1 if Scron.now.month < month ||
+                   (Scron.now.month == month && Scron.now.day < day)
+      (Scron.now - DateTime.new(year, month, day)).to_i + 1
+    else
+      interval.to_i
+    end
   end
 end
 
@@ -80,7 +101,7 @@ class History
   end
 
   def touch(command)
-    @history[command] = Scron::NOW
+    @history[command] = Scron.now
   end
 
   def to_s

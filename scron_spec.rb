@@ -1,6 +1,10 @@
 require 'scron'
 
 describe Scron do
+  before(:all) do
+    Scron.instance_variable_set(:@now, DateTime.new(2010, 4, 15))
+  end
+  
   it "should set SCHEDULE_FILE" do
     Scron::SCHEDULE_FILE.should == "#{ENV['HOME']}/.scron"
   end
@@ -38,10 +42,35 @@ describe Scron do
 end
 
 describe Schedule do
-  it "should parse interval from time string" do
-    history = History.new('')
-    Schedule.new('1 c', history).send(:parse_days, '1d').should == 1
-    Schedule.new('1 c', history).send(:parse_days, '30d').should == 30
+  it "should parse interval from day string" do
+    sched = Schedule.new('1d c', History.new(''))
+    sched.send(:parse_days, '1d').should == 1
+    sched.send(:parse_days, '30d').should == 30
+  end
+
+  it "should parse interval from day of week" do
+    sched = Schedule.new('1d c', History.new(''))
+    sched.send(:parse_days, 'Mo').should == 4
+    sched.send(:parse_days, 'Tu').should == 3
+    sched.send(:parse_days, 'We').should == 2
+    sched.send(:parse_days, 'Th').should == 1
+    sched.send(:parse_days, 'Fr').should == 7
+    sched.send(:parse_days, 'Sa').should == 6
+    sched.send(:parse_days, 'Su').should == 5
+  end
+
+  it "should parse interval from day of month" do
+    sched = Schedule.new('1d c', History.new(''))
+    sched.send(:parse_days, '1st').should == 15
+    sched.send(:parse_days, '15th').should == 1
+    sched.send(:parse_days, '23rd').should == 24
+  end
+
+  it "should parse interval from day of year" do
+    sched = Schedule.new('1d c', History.new(''))
+    sched.send(:parse_days, '1/1').should == 105
+    sched.send(:parse_days, '4/15').should == 1
+    sched.send(:parse_days, '12/25').should == 112
   end
 
   it "should initialize with command and interval" do
