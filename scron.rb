@@ -77,10 +77,10 @@ class Schedule
     if WEEKDAYS[interval]
       (now.cwday - WEEKDAYS[interval]) % 7 + 1
     elsif interval =~ /^\d+(st|nd|rd|th)$/
-      day, last_month = interval.to_i, now << 1
+      day = interval.to_i
       delta = now.day >= day ?
         now.day - day :
-        now - DateTime.new(last_month.year, last_month.month, day)
+        now - last_month(day)
       delta.to_i + 1
     elsif interval =~ /^(\d+)\/(\d+)$/
       year, month, day = Scron.now.year, $1.to_i, $2.to_i
@@ -90,7 +90,15 @@ class Schedule
     elsif interval =~ /^\d+d$/
       interval.to_i
     else
-      raise "Unable to parse: #{interval}"
+      raise ArgumentError.new("Unable to parse: #{interval}")
+    end
+  end
+
+  def last_month(day)
+    last = Scron.now << 1
+    [day, 30, 29, 28].each do |d|
+      date = DateTime.new(last.year, last.month, d) rescue nil
+      return date if date
     end
   end
 end

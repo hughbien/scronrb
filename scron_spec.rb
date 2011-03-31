@@ -2,7 +2,7 @@ require 'scron'
 
 describe Scron do
   before(:all) do
-    Scron.instance_variable_set(:@now, DateTime.new(2010, 4, 15))
+    Scron.instance_variable_set(:@now, DateTime.new(2010, 3, 15))
   end
   
   it "should set SCHEDULE_FILE" do
@@ -54,27 +54,28 @@ describe Schedule do
 
   it "should parse interval from day of week" do
     sched = Schedule.new('1d c', History.new(''))
-    sched.send(:parse_days, 'Mo').should == 4
-    sched.send(:parse_days, 'Tu').should == 3
-    sched.send(:parse_days, 'We').should == 2
-    sched.send(:parse_days, 'Th').should == 1
-    sched.send(:parse_days, 'Fr').should == 7
-    sched.send(:parse_days, 'Sa').should == 6
-    sched.send(:parse_days, 'Su').should == 5
+    sched.send(:parse_days, 'Mo').should == 1
+    sched.send(:parse_days, 'Tu').should == 7
+    sched.send(:parse_days, 'We').should == 6
+    sched.send(:parse_days, 'Th').should == 5
+    sched.send(:parse_days, 'Fr').should == 4
+    sched.send(:parse_days, 'Sa').should == 3
+    sched.send(:parse_days, 'Su').should == 2
   end
 
   it "should parse interval from day of month" do
     sched = Schedule.new('1d c', History.new(''))
     sched.send(:parse_days, '1st').should == 15
     sched.send(:parse_days, '15th').should == 1
-    sched.send(:parse_days, '23rd').should == 24
+    sched.send(:parse_days, '23rd').should == 21
+    sched.send(:parse_days, '31st').should == 16
   end
 
   it "should parse interval from day of year" do
     sched = Schedule.new('1d c', History.new(''))
-    sched.send(:parse_days, '1/1').should == 105
-    sched.send(:parse_days, '4/15').should == 1
-    sched.send(:parse_days, '12/25').should == 112
+    sched.send(:parse_days, '1/1').should == 74
+    sched.send(:parse_days, '3/15').should == 1
+    sched.send(:parse_days, '12/25').should == 81
   end
 
   it "should initialize with command and interval" do
@@ -84,9 +85,15 @@ describe Schedule do
     sched.should be_overdue
   end
 
+  it "should handle bad date strings" do
+    sched = Schedule.new('1d c', History.new(''))
+    lambda { sched.send(:parse_days, '2/31') }.should raise_error(ArgumentError)
+    lambda { sched.send(:parse_days, '1') }.should raise_error(ArgumentError)
+  end
+
   it "should initialize with multiple intervals" do
     Schedule.new('1d,2d,3d cmd', History.new('')).interval.should == 1
-    Schedule.new('Mo,Tu,We cmd', History.new('')).interval.should == 2
+    Schedule.new('Fr,Sa,Su cmd', History.new('')).interval.should == 2
     Schedule.new('1st,23rd cmd', History.new('')).interval.should == 15
   end
 
