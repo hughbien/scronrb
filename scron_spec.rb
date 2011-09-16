@@ -23,7 +23,7 @@ describe Scron do
 
   it "should use empty text if no file exists" do
     Scron.send(:read, './non-existent-file').should == ''
-    Scron.send(:read, 'README').should_not == ''
+    Scron.send(:read, 'README.md').should_not == ''
   end
 
   it "should initialize with empty schedules" do
