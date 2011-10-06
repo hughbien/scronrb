@@ -1,8 +1,7 @@
-#!/usr/bin/env ruby
-require 'optparse'
 require 'date'
 
 class Scron
+  VERSION = '1.0.0'
   SCHEDULE_FILE = "#{ENV['HOME']}/.scron"
   HISTORY_FILE = "#{ENV['HOME']}/.scrondb"
   LOG_FILE = "#{ENV['HOME']}/.scronlog"
@@ -122,14 +121,3 @@ class History
     lines.join("\n")
   end
 end
-
-ARGV.options do |o|
-  o.set_summary_indent('  ')
-  o.banner =    "Usage: #{File.basename($0)} [OPTION]"
-  o.define_head "Scheduler for laptops/machines which aren't on 24/7"
-  o.on('-e', '--edit', 'edit jobs') { Scron.edit; exit }
-  o.on('-r', '--run', 'run jobs') { Scron.run; exit }
-  o.on('-h', '--help', 'show this help message') { puts o; exit }
-  o.parse!
-  puts o
-end if $0 == __FILE__
