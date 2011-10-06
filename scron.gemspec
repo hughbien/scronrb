@@ -17,5 +17,4 @@ Gem::Specification.new do |s|
   s.files        = Dir.glob('*.{rb,md}') + %w(scron)
   s.bindir       = '.'
   s.executables  = ['scron']
-  s.require_path = 'lib'
 end
