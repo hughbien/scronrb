@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require 'optparse'
 require 'date'
 
 class Scron
@@ -15,10 +16,7 @@ class Scron
       map {|l| Schedule.new(l, @history)}
   end
 
-  def self.run(option)
-    return edit if option == '-e'
-    return help if option != '-r'
-
+  def self.run
     scron = Scron.new(read(SCHEDULE_FILE), read(HISTORY_FILE))
     overdue = scron.schedules.select {|s| s.overdue?}
     return if overdue.size == 0
@@ -38,19 +36,13 @@ class Scron
     @now ||= DateTime.now
   end
 
+  def self.edit
+    `#{EDITOR} #{SCHEDULE_FILE} < \`tty\` > \`tty\``
+  end
+
   private
   def self.read(filename)
     File.exist?(filename) ? File.read(filename) : ''
-  end
-
-  def self.help
-    puts "Usage: #{File.basename(__FILE__)} [OPTION]\n" +
-         "       -e edit jobs\n" +
-         "       -r run jobs"
-  end
-
-  def self.edit
-    `#{EDITOR} #{SCHEDULE_FILE} < \`tty\` > \`tty\``
   end
 end
 
@@ -131,4 +123,13 @@ class History
   end
 end
 
-Scron.run(ARGV[0]) if $0 == __FILE__
+ARGV.options do |o|
+  o.set_summary_indent('  ')
+  o.banner =    "Usage: #{File.basename($0)} [OPTION]"
+  o.define_head "Scheduler for laptops/machines which aren't on 24/7"
+  o.on('-e', '--edit', 'edit jobs') { Scron.edit; exit }
+  o.on('-r', '--run', 'run jobs') { Scron.run; exit }
+  o.on('-h', '--help', 'show this help message') { puts o; exit }
+  o.parse!
+  puts o
+end if $0 == __FILE__
