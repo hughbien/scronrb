@@ -10,6 +10,10 @@ task :build do
   `gem build scron.gemspec`
 end
 
+task :clean do
+  rm Dir.glob('*.gem')
+end
+
 task :push => :build do
   `gem push scron-#{Scron::VERSION}.gem`
 end
