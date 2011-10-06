@@ -7,8 +7,7 @@ Scron is a scheduler for laptops/machines which aren't on 24/7.
 Installation
 ============
 
-    % gem build scron.gemspec
-    % gem install scron-1.0.0.gem
+    % gem install scron
 
 Then configure cron to run it.  I recommend every 2 hours, but you can put any
 interval here:
