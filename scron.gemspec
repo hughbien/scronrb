@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.6'
   s.add_development_dependency 'minitest'
  
-  s.files        = Dir.glob('*.{rb}') + %w(scron)
+  s.files        = Dir.glob('*.{rb,md}') + %w(scron)
   s.bindir       = '.'
   s.executables  = ['scron']
   s.require_path = 'lib'
