@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'scron'
+require "#{File.dirname(__FILE__)}/scron"
 require 'minitest/autorun'
 
 class ScronTest < MiniTest::Unit::TestCase
