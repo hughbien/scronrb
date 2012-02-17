@@ -56,5 +56,5 @@ scheduled commands.
 License
 =======
 
-Copyright 2011 Hugh Bien - http://hughbien.com.
-Released under MIT License, see LICENSE.md for more info.
+Copyright 2012 Hugh Bien - http://hughbien.com.
+Released under BSD License, see LICENSE.md for more info.
