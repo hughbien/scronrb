@@ -22,7 +22,7 @@ class Scron
 
     logger = []
     overdue.each do |schedule|
-      output = `#{schedule.command}`
+      output = safe_cmd(schedule.command)
       logger << "=> #{now.strftime(History::FORMAT)} #{schedule.command} (#{$?.to_i})"
       logger << output unless output == ''
       scron.history.touch(schedule.command) if $?.to_i == 0
@@ -40,6 +40,12 @@ class Scron
   end
 
   private
+  def self.safe_cmd(command)
+    `#{command}`
+  rescue StandardError => error
+    error.to_s
+  end
+
   def self.read(filename)
     File.exist?(filename) ? File.read(filename) : ''
   end
