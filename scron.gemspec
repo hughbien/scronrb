@@ -1,8 +1,6 @@
-require File.expand_path('scron', File.dirname(__FILE__)) 
- 
 Gem::Specification.new do |s|
   s.name        = 'scron'
-  s.version     = Scron::VERSION
+  s.version     = '1.0.1'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Hugh Bien']
   s.email       = ['hugh@hughbien.com']

@@ -3,18 +3,16 @@ Description
 
 Scron is a scheduler for laptops/machines which aren't on 24/7.
 
-
 Installation
 ============
 
-    % gem install scron
+    $ gem install scron
 
 Then configure cron to run it.  I recommend every 2 hours, but you can put any
 interval here:
 
-    % crontab -e
+    $ crontab -e
     0 */2 * * * scron -r
-
 
 Usage
 =====
@@ -40,7 +38,6 @@ entire day, it will run as soon as possible.  Here's an example timeline:
 * Th: already ran, nothing happens
 * Fr: machine is on, cmd1 runs
 
-
 Notes
 =====
 
@@ -52,9 +49,8 @@ failure and scron will attempt to re-run it again in 2 hours.
 `$HOME/.scronlog` has the stdout, timestamps, and exit status of last 
 scheduled commands.
 
-
 License
 =======
 
-Copyright 2012 Hugh Bien - http://hughbien.com.
+Copyright Hugh Bien - http://hughbien.com.
 Released under BSD License, see LICENSE.md for more info.
