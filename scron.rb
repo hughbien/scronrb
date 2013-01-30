@@ -1,7 +1,7 @@
 require 'date'
 
 class Scron
-  VERSION = '1.0.1'
+  VERSION = '1.0.2'
   SCHEDULE_FILE = "#{ENV['HOME']}/.scron"
   HISTORY_FILE = "#{ENV['HOME']}/.scrondb"
   LOG_FILE = "#{ENV['HOME']}/.scronlog"
@@ -18,17 +18,24 @@ class Scron
   def self.run
     scron = Scron.new(read(SCHEDULE_FILE), read(HISTORY_FILE))
     overdue = scron.schedules.select {|s| s.overdue?}
+    nowstr = now.strftime(History::FORMAT)
+
+    logger = File.open(LOG_FILE, "a")
+    logger.puts("=> #{nowstr} running")
     return if overdue.size == 0
 
-    logger = []
     overdue.each do |schedule|
+      logger.puts("=> #{nowstr} #{schedule.command} (start)")
       output = safe_cmd(schedule.command)
-      logger << "=> #{now.strftime(History::FORMAT)} #{schedule.command} (#{$?.to_i})"
-      logger << output unless output == ''
-      scron.history.touch(schedule.command) if $?.to_i == 0
+      logger.puts("=> #{nowstr} #{schedule.command} (exit=#{$?.to_i})")
+      logger.puts(output) unless output == ''
+      if $?.to_i == 0
+        scron.history.touch(schedule.command) 
+        File.open(HISTORY_FILE, "w") {|f| f.puts scron.history.to_s}
+      end
     end
-    File.open(HISTORY_FILE, "w") {|f| f.puts scron.history.to_s}
-    File.open(LOG_FILE, "a") {|f| f.puts logger.map {|l| l.strip}.join("\n")}
+  ensure
+    logger.close
   end
 
   def self.now
