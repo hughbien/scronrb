@@ -39,7 +39,11 @@ class Scron
   end
 
   def self.now
-    @now ||= DateTime.now
+    @now ||= begin
+      now = DateTime.now
+      now += now.offset
+      now = now.new_offset('+00:00')
+    end
   end
 
   def self.edit

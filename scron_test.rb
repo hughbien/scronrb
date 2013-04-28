@@ -6,7 +6,9 @@ class ScronTest < MiniTest::Unit::TestCase
   def setup
     Scron.instance_variable_set(:@now, DateTime.new(2010, 3, 15))
   end
+end
 
+class AppTest < ScronTest
   def test_files
     assert_equal("#{ENV['HOME']}/.scron", Scron::SCHEDULE_FILE)
     assert_equal("#{ENV['HOME']}/.scrondb", Scron::HISTORY_FILE)
@@ -41,7 +43,7 @@ class ScronTest < MiniTest::Unit::TestCase
   end
 end
 
-class ScheduleTest
+class ScheduleTest < ScronTest
   def test_parse_day_interval
     sched = Schedule.new('1d c', History.new(''))
     assert_equal(1, sched.send(:parse_days, '1d'))
@@ -104,7 +106,7 @@ class ScheduleTest
   end
 end
 
-class HistoryTest
+class HistoryTest < ScronTest
   def test_initialize
     history = History.new('2100-01-01.01:00 cmd arg1 arg2')
     assert_equal(DateTime.new(2100, 1, 1, 1, 0), history['cmd arg1 arg2'])
