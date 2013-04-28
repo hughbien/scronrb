@@ -1,7 +1,7 @@
 require 'date'
 
 class Scron
-  VERSION = '1.0.2'
+  VERSION = '1.0.3'
   SCHEDULE_FILE = "#{ENV['HOME']}/.scron"
   HISTORY_FILE = "#{ENV['HOME']}/.scrondb"
   LOG_FILE = "#{ENV['HOME']}/.scronlog"

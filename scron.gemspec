@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'scron'
-  s.version     = '1.0.2'
+  s.version     = '1.0.3'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Hugh Bien']
   s.email       = ['hugh@hughbien.com']
