@@ -49,6 +49,11 @@ failure and scron will attempt to re-run it again in 2 hours.
 `$HOME/.scronlog` has the stdout, timestamps, and exit status of last 
 scheduled commands.
 
+TODO
+====
+
+* rename process to scron
+
 License
 =======
 

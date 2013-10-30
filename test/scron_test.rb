@@ -1,8 +1,9 @@
 require 'rubygems'
-require "#{File.dirname(__FILE__)}/scron"
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'scron'))
+gem 'minitest'
 require 'minitest/autorun'
 
-class ScronTest < MiniTest::Unit::TestCase
+class ScronTest < Minitest::Test
   def setup
     Scron.instance_variable_set(:@now, DateTime.new(2010, 3, 15))
   end
