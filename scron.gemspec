@@ -1,6 +1,8 @@
+require_relative 'lib/scron/version'
+
 Gem::Specification.new do |s|
   s.name        = 'scron'
-  s.version     = '1.0.3'
+  s.version     = Scron::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Hugh Bien']
   s.email       = ['hugh@hughbien.com']
