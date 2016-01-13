@@ -1,9 +1,13 @@
-require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'scron'))
+require_relative 'lib/scron/version'
 
 task :default => :test
 
 task :test do
-  ruby 'test/*_test.rb' # see .watchr for continuous testing
+  if file = ENV['TEST']
+    File.exists?(file) ? require_relative(file) : puts("#{file} doesn't exist")
+  else
+    Dir.glob('./test/*_test.rb').each { |f| require(f) }
+  end
 end
 
 task :build do
