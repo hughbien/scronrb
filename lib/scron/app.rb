@@ -1,4 +1,5 @@
 module Scron
+  # Entry point from CLI into the application
   class App
     SCHEDULE_FILE = "#{ENV['HOME']}/.scron"
     HISTORY_FILE = "#{ENV['HOME']}/.scrondb"

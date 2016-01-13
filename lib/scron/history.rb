@@ -1,4 +1,5 @@
 module Scron
+  # Parses/updates the history of last run commands
   class History
     FORMAT = '%Y-%m-%d.%H:%M'
 

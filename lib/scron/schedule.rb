@@ -1,4 +1,5 @@
 module Scron
+  # Parses a scron configuration line and determines its interval/command
   class Schedule
     attr_reader :interval, :command
     WEEKDAYS = {'Mo' => 1, 'Tu' => 2, 'We' => 3, 'Th' => 4, 'Fr' => 5,
