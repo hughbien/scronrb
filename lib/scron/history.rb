@@ -15,6 +15,7 @@ module Scron
       @history[command]
     end
 
+    # update the timestamp on a command
     def touch(command)
       @history[command] = App.now
     end
