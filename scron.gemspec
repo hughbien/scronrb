@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Hugh Bien']
   s.email       = ['hugh@hughbien.com']
-  s.homepage    = 'https://github.com/hughbien/scron'
+  s.homepage    = 'https://github.com/hughbien/scronrb'
   s.summary     = "Scheduler for laptops/machines which aren't on 24/7"
   s.description = 'Run commands at scheduled intervals.  If an interval is ' +
                   'missed, the command will be run as soon as possible.'
